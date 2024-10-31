@@ -6,6 +6,6 @@ spec:
   selector:
     app: clamav-mirror # this should match the pod label in deployment.yml
   ports:
-    - protocol: https
+    - name: https
       port: 8080
       targetPort: 8080
