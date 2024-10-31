@@ -21,4 +21,4 @@ spec:
               service:
                 name: laa-clamav-mirror-service # this should match the metadata.name in service.yml
                 port:
-                  number: 80
+                  number: 8080
