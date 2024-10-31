@@ -20,6 +20,11 @@ spec:
       containers:
         - name: laa-clamav-container
           image: ${ECR_URL}:${IMAGE_TAG}
+          resources:
+            requests:
+              memory: "3Gi"
+            limits:
+              memory: "5Gi"
           ports:
             - containerPort: 8080
           volumeMounts:
