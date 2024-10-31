@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: laa-clamav-statefulset
+  labels:
+    app: clamav-mirror
+spec:
+  serviceName: "laa-clamav-mirror-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clamav-mirror
+  template:
+    metadata:
+      labels:
+        app: clamav-mirror
+    spec:
+      serviceAccountName: laa-clamav-mirror-serviceaccount-production
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: laa-clamav-container
+          image: ${ECR_URL}:${IMAGE_TAG}
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+          - name: clamav-data
+            mountPath: "/home/clam/db/"
+          env:
+            - name: AWS_REGION
+              value: "eu-west-2"
+  volumeClaimTemplates:
+  - metadata:
+      name: clamav-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi

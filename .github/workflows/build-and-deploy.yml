@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches-ignore: ['main']
+
+jobs:
+  deploy_prod:
+    environment: prod
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read  # This is required for actions/checkout
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build Docker Image
+      run: |
+        docker build -t laa-clamav-mirror .
+
+    - name: Assume AWS Role
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.PROD_ECR_ROLE_TO_ASSUME }}
+        aws-region: ${{ vars.PROD_ECR_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr-dev
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Store ECR endpoint as output
+      id: ecr-url-output
+      run: echo "::set-output name=ecr_url::${{ steps.login-ecr-dev.outputs.registry }}/${{ vars.PROD_ECR_REPOSITORY }}"
+
+    - name: Push to ECR
+      id: ecr
+      env:
+        ECR_URL: ${{ steps.ecr-url-output.outputs.ecr_url }}
+      run: |
+        docker tag laa-clamav-mirror $ECR_URL:${{ github.sha }}
+        docker tag laa-clamav-mirror $ECR_URL:prod.latest
+        docker push $ECR_URL:${{ github.sha }}
+        docker push $ECR_URL:prod.latest
+
+    - name: Deploy DEV
+      uses: ./.github/actions/deploy
+      with:
+        ecr-url: ${{ steps.ecr-url-output.outputs.ecr_url }}
+        kube-cert: ${{ secrets.KUBE_CERT }}
+        kube-token: ${{ secrets.KUBE_TOKEN }}
+        kube-cluster: ${{ secrets.KUBE_CLUSTER }}
+        kube-namespace: ${{ secrets.KUBE_NAMESPACE }}
+
