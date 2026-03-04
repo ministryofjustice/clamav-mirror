@@ -2,9 +2,11 @@
 
 This repository sets up a **private ClamAV mirror**.
 
-We require a private mirror within the Ministry of Justice (MOJ) to prevent every node from going outbound to the central ClamAV signature database.  
-ClamAV signatures update regularly, and standard nodes typically perform at least 24 checks per day.  
+We require a private mirror within the Ministry of Justice (MOJ) to prevent every node from going outbound to the central ClamAV signature database.
+ClamAV signatures update regularly, and standard nodes typically perform at least 24 checks per day.
 If all nodes in our environments pull directly from the central mirror, the traffic from a small set of IP addresses would likely cause throttling issues over time.
+
+[![Ministry of Justice Repository Compliance Badge](https://github-community.service.justice.gov.uk/repository-standards/api/clamav-mirror/badge)](https://github-community.service.justice.gov.uk/repository-standards/clamav-mirror)
 
 ---
 
@@ -29,11 +31,11 @@ The main entry point is the `cvdmirror.crontab` file, which defines two schedule
 */50 * * * * ./test.sh
 ```
 
-- **Every 10 minutes:**  
+- **Every 10 minutes:**
   Runs a `cvd update` to fetch the latest signature files from the central mirror.
-  
-- **Every 50 minutes:**  
-  Runs `test.sh`, which verifies the updated signatures using known test files.  
+
+- **Every 50 minutes:**
+  Runs `test.sh`, which verifies the updated signatures using known test files.
   If the signatures pass testing, they are published and made available for download.
 
 ---
