@@ -26,7 +26,7 @@ RUN curl -fsSLO "$SUPERCRONIC_URL" \
 
 RUN pip install -U setuptools certifi
 
-RUN pip install -vv cvdupdate==1.1.1
+RUN pip install -vv cvdupdate==1.2.0
 
 COPY start.sh lighttpdhost.conf lighttpdmirror.conf test.sh ./
 COPY freshclam.conf /etc/clamav/freshclam.conf
