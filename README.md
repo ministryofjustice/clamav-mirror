@@ -42,7 +42,7 @@ The main entry point is the `cvdmirror.crontab` file, which defines two schedule
 
 ## Testing Strategy
 
-- Two test files (`safe` and `eicar`) are used to verify the updated signatures.
+- Two test files (`safe.txt` and `eicar.txt`) are used to verify the updated signatures.
 - **Two instances** of `lighttpd` are used:
   - **Mirror instance:** Hosts the updated ClamAV signatures.
   - **Test client instance:** Simulates pulling the signatures like a real client, to validate end-to-end functionality.
