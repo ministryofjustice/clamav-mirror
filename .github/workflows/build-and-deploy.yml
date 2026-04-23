@@ -14,21 +14,21 @@ jobs:
       contents: read  # This is required for actions/checkout
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Build Docker Image
       run: |
         docker build -t laa-clamav-mirror .
 
     - name: Assume AWS Role
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
       with:
         role-to-assume: ${{ secrets.PROD_ECR_ROLE_TO_ASSUME }}
         aws-region: ${{ vars.PROD_ECR_REGION }}
 
     - name: Login to Amazon ECR
       id: login-ecr-dev
-      uses: aws-actions/amazon-ecr-login@v1
+      uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # v2.1.2
 
     - name: Store ECR endpoint as output
       id: ecr-url-output
